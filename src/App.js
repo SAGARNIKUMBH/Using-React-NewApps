@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import Navbar from "./Components/Navbar";
 import News from "./Components/News";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import LoadingBar from "react-top-loading-bar";
 
 export default class App extends Component {
   render() {
@@ -11,6 +12,7 @@ export default class App extends Component {
       <div>
         <Router>
           <Navbar />
+          <LoadingBar color="#f11946" progress={10} />
 
           <Switch>
             <Route exact path="/">

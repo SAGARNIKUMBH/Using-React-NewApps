@@ -9,25 +9,28 @@ export class News extends Component {
     pageSize: 6,
     category: "general",
   };
-
   static propTypes = {
     country: PropTypes.string,
     pageSize: PropTypes.number,
     category: PropTypes.string,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     console.log("Hello I M Constructor");
+    console.log(props);
+
     this.state = {
       articles: [],
       loading: false,
       page: 1,
       totalResults: 0,
+      apiKey: "",
     };
+    document.title = `${this.props.category}-Daily News Apps`;
   }
   async componentDidMount() {
-    console.log("cdm");
+    console.log("cdm", process.env.REACT_APP_NEWS_API);
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=f9a56250b7fd490b8223d72b500d0e6b&page=1&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
@@ -36,6 +39,7 @@ export class News extends Component {
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
+      // apiKey: process.env.REACT_APP_NEWS_API,
     });
   }
   handleprevClick = async () => {
@@ -60,6 +64,7 @@ export class News extends Component {
   };
   handleNextClick = async () => {
     console.log("Next");
+    window.scrollTo(0, 0);
     if (
       this.state.page + 1 >
       Math.ceil(this.state.totalResults / this.props.pageSize)
@@ -87,43 +92,49 @@ export class News extends Component {
   render() {
     return (
       <div className="container my-3">
-        <h1 className="text-center">Daily Top Headlines</h1>
-        {this.state.loading && <Spinner />}
-        <div className="row">
-          {this.state.articles.map((element) => {
-            return (
-              <div className="col-md-4" key={element.url}>
-                <NewsItem
-                  title={element?.title?.slice(0, 41)}
-                  description={element?.description?.slice(0, 88)}
-                  imageUrl={element.urlToImage}
-                  newUrl={element.url}
-                />
-              </div>
-            );
-          })}
-        </div>
-        <hr />
-        <div className="container d-flex justify-content-between">
-          <button
-            disabled={this.state.page <= 1}
-            type="button"
-            className="btn btn-dark"
-            onClick={this.handleprevClick}
-          >
-            &larr; Previous
-          </button>
-          <button
-            disabled={
-              this.state.page + 1 >
-              Math.ceil(this.state.totalResults / this.props.pageSize)
-            }
-            type="button"
-            className="btn btn-dark"
-            onClick={this.handleNextClick}
-          >
-            Next &rarr;
-          </button>
+        <div className="" style={{ marginTop: "80px" }}>
+          <h1 className="text-center">
+            Daily Top Headlines Form {this.props.category}
+          </h1>
+          {this.state.loading && <Spinner />}
+          <div className="row">
+            {this.state?.articles?.map((element) => {
+              return (
+                <div className="col-md-4" key={element.url}>
+                  <NewsItem
+                    title={element?.title?.slice(0, 41)}
+                    description={element?.description?.slice(0, 88)}
+                    imageUrl={element.urlToImage}
+                    newUrl={element.url}
+                    author={element.author}
+                    date={element.publishedAt}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <hr />
+          <div className="container d-flex justify-content-between">
+            <button
+              disabled={this.state.page <= 1}
+              type="button"
+              className="btn btn-dark"
+              onClick={this.handleprevClick}
+            >
+              &larr; Previous
+            </button>
+            <button
+              disabled={
+                this.state.page + 1 >
+                Math.ceil(this.state.totalResults / this.props.pageSize)
+              }
+              type="button"
+              className="btn btn-dark"
+              onClick={this.handleNextClick}
+            >
+              Next &rarr;
+            </button>
+          </div>
         </div>
       </div>
     );

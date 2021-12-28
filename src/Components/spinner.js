@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import loading from "../Iphone-spinner-1.gif";
+// import loading from "../Iphone-spinner-1.gif";
 import "../App.css";
 
 export class Spinner extends Component {
